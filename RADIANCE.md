@@ -35,20 +35,66 @@ systems are normal plugins that apply to everyone.
 
 ## Roadmap
 
-1. Setup: server running, logged in (done). Brand it (login message, world name),
-   first plugin (`::starter`), commit and push.
-2. Small wins: a few small custom features (shop, NPC with dialogue, command),
-   practice pulling upstream updates.
-3. Multi-character accounts with a character select screen.
-4. Pet perks.
-5. Leagues systems on the main world (which ones still to be decided).
-6. RS3 and Ferox-style systems: RS3 mechanics with OSRS assets (bank presets,
-   portables, area loot), weapon upgrades with random perks, custom interfaces.
-7. Fill OSRS gaps: Fletching, Agility, Hunter, more bosses and minigames.
-8. Big content: Chambers of Xeric, then ToB and ToA. Launcher and hosting once
+1. Setup: server running, logged in, world name set to Radiance (done). Login
+   message, first plugin (`::starter`), commit and push.
+2. Account and XP modes (first custom feature, see design notes).
+3. Multi-character accounts with a character select screen (mode is picked when
+   creating a character).
+4. Duo and group ironman: groups, invites, shared storage, shared HC lives.
+5. Pet perks.
+6. Leagues systems on the main world (which ones still to be decided).
+7. RS3 and Ferox-style systems: RS3 mechanics with OSRS assets (bank presets,
+   portables, area loot), weapon upgrades with random perks, prestige system,
+   custom interfaces.
+8. Lumbridge town square: an RS3-style town square built from OSRS objects with a
+   map editor (RSPSi; first check its OSRS plugin supports rev 241).
+9. Fill OSRS gaps: Fletching, Agility, Hunter, more bosses and minigames.
+10. Big content: Chambers of Xeric, then ToB and ToA. Launcher and hosting once
    it's fun to play.
 
 ## Design notes
+
+### Account and XP modes
+Each character has one account mode and one XP mode, picked when the character is
+created.
+
+Account modes:
+
+| Account mode | Allowed XP modes |
+| --- | --- |
+| Normal | Any |
+| Ironman | Any |
+| Hardcore Ironman | Any |
+| Duo Ironman | Elite only |
+| Group Ironman | Standard only |
+| Hardcore Group Ironman | Standard only |
+
+Ultimate Ironman is not offered (OpenRune supports it, Radiance doesn't use it).
+
+XP modes (multipliers are combat / skilling):
+
+| XP mode | Combat | Skilling | Drop rate boost |
+| --- | --- | --- | --- |
+| Relaxed | 50x | 30x | 0% |
+| Standard | 25x | 18x | 5% |
+| Elite | 12x | 8x | 10% |
+| Cronto | 4x | 4x | 12% |
+
+- Combat skills: Attack, Strength, Defence, Ranged, Magic, Hitpoints, Prayer.
+  Everything else is skilling, including Slayer.
+- Harder XP modes will also give more points in the prestige system (designed later).
+- Changing XP mode: only toward easier (Cronto -> Elite -> Standard -> Relaxed),
+  never harder. Duo and group ironman stay locked to their allowed mode.
+- De-ironing: ironmen can de-iron and become a Normal account, keeping their
+  current XP mode.
+- Hardcore Ironman: an unsafe death demotes to Ironman (OpenRune already does this).
+- Hardcore Group Ironman: shared group lives, same as OSRS (check the OSRS wiki for
+  the exact rules).
+- Group sizes: Duo is 2, Group is 2 to 5.
+- OpenRune already has Normal, Ironman and Hardcore Ironman with restrictions
+  enforced (see `docs/ironman.md`). Duo and group ironman are new.
+- Open questions: leaving or disbanding a duo/group, and what de-ironing does to
+  the group.
 
 ### Pet perks
 - Each pet has 5 perk slots. A general perk pool, plus unique perks for some pets.
@@ -64,10 +110,12 @@ systems are normal plugins that apply to everyone.
 - After login, the player is held in a lobby with a proper custom interface listing
   the account's characters (name, combat level, total level, location, last
   played) with Play, Create and Delete.
+- Creating a character means choosing a name, an account mode and an XP mode, with
+  the allowed combinations enforced (see Account and XP modes).
 - Picking a character loads that character's save. OpenRune's in-place save swap
   (used for world types) is the likely starting point.
 - Open questions: characters per account, anything shared across characters,
-  switching without logging out, per-character modes (e.g. ironman).
+  switching without logging out.
 
 ## Open items
 
